@@ -247,6 +247,9 @@ class Showcase extends StatefulWidget {
   /// Disables barrier interaction for a particular showCase.
   final bool disableBarrierInteraction;
 
+  ///Custom OverlayWidget
+  final Widget? customOverlayWidget;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -292,6 +295,7 @@ class Showcase extends StatefulWidget {
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
+    this.customOverlayWidget,
   })  : height = null,
         width = null,
         container = null,
@@ -332,6 +336,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
+    this.customOverlayWidget,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -446,7 +451,8 @@ class _ShowcaseState extends State<Showcase> {
             screenWidth: size.width,
             screenHeight: size.height,
           );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size,
+              widget.customOverlayWidget);
         },
         showOverlay: true,
         child: widget.child,
@@ -521,6 +527,7 @@ class _ShowcaseState extends State<Showcase> {
     Size size,
     Rect rectBound,
     Size screenSize,
+    Widget? topPageShowCaseIndicator,
   ) {
     final mediaQuerySize = MediaQuery.of(context).size;
     var blur = 0.0;
@@ -557,23 +564,51 @@ class _ShowcaseState extends State<Showcase> {
             child: blur != 0
                 ? BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: Container(
-                      width: mediaQuerySize.width,
-                      height: mediaQuerySize.height,
-                      decoration: BoxDecoration(
-                        color: widget.overlayColor
-                            .withOpacity(widget.overlayOpacity),
-                      ),
-                    ),
+                    child: topPageShowCaseIndicator != null
+                        ? Stack(
+                            children: [
+                              Container(
+                                width: mediaQuerySize.width,
+                                height: mediaQuerySize.height,
+                                decoration: BoxDecoration(
+                                  color: widget.overlayColor
+                                      .withOpacity(widget.overlayOpacity),
+                                ),
+                              ),
+                              topPageShowCaseIndicator,
+                            ],
+                          )
+                        : Container(
+                            width: mediaQuerySize.width,
+                            height: mediaQuerySize.height,
+                            decoration: BoxDecoration(
+                              color: widget.overlayColor
+                                  .withOpacity(widget.overlayOpacity),
+                            ),
+                          ),
                   )
-                : Container(
-                    width: mediaQuerySize.width,
-                    height: mediaQuerySize.height,
-                    decoration: BoxDecoration(
-                      color: widget.overlayColor
-                          .withOpacity(widget.overlayOpacity),
-                    ),
-                  ),
+                : topPageShowCaseIndicator != null
+                    ? Stack(
+                        children: [
+                          Container(
+                            width: mediaQuerySize.width,
+                            height: mediaQuerySize.height,
+                            decoration: BoxDecoration(
+                              color: widget.overlayColor
+                                  .withOpacity(widget.overlayOpacity),
+                            ),
+                          ),
+                          topPageShowCaseIndicator,
+                        ],
+                      )
+                    : Container(
+                        width: mediaQuerySize.width,
+                        height: mediaQuerySize.height,
+                        decoration: BoxDecoration(
+                          color: widget.overlayColor
+                              .withOpacity(widget.overlayOpacity),
+                        ),
+                      ),
           ),
         ),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
