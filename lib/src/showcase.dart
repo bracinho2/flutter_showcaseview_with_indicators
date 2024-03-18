@@ -248,7 +248,7 @@ class Showcase extends StatefulWidget {
   final bool disableBarrierInteraction;
 
   ///Custom OverlayWidget
-  final Widget? customOverlayWidget;
+  final Widget? topPageShowCaseIndicator;
 
   const Showcase({
     required this.key,
@@ -295,7 +295,7 @@ class Showcase extends StatefulWidget {
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
-    this.customOverlayWidget,
+    this.topPageShowCaseIndicator,
   })  : height = null,
         width = null,
         container = null,
@@ -336,7 +336,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
-    this.customOverlayWidget,
+    this.topPageShowCaseIndicator,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -452,7 +452,7 @@ class _ShowcaseState extends State<Showcase> {
             screenHeight: size.height,
           );
           return buildOverlayOnTarget(offset, rectBound.size, rectBound, size,
-              widget.customOverlayWidget);
+              widget.topPageShowCaseIndicator);
         },
         showOverlay: true,
         child: widget.child,
