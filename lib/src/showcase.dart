@@ -37,13 +37,13 @@ import 'tooltip_widget.dart';
 /// Function that creates a Custom Indicatorbuilder
 
 typedef ShowCaseIndicatorBuilder = Widget Function(
-  BuildContext? context,
+  BuildContext context,
   Color? overlayColorIndicator,
   double? opacityIndicator,
 );
 
 typedef ShowCaseCommandBuilder = Widget Function(
-  BuildContext? context,
+  BuildContext context,
 );
 
 class Showcase extends StatefulWidget {
