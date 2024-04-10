@@ -34,14 +34,17 @@ import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
-/// Function that creates a custom indicator
+/// Function that creates a Custom Indicatorbuilder
 
-typedef ShowCaseIndicatorBuilder = Widget Function({
-  double? screenHeightIndicator,
-  double? screenWidthIndicator,
+typedef ShowCaseIndicatorBuilder = Widget Function(
+  BuildContext? context,
   Color? overlayColorIndicator,
   double? opacityIndicator,
-});
+);
+
+typedef ShowCaseCommandBuilder = Widget Function(
+  BuildContext? context,
+);
 
 class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
@@ -259,17 +262,14 @@ class Showcase extends StatefulWidget {
   ///Custom OverlayWidget
   final ShowCaseIndicatorBuilder? builderIndicator;
 
-  /// screen height indicator
-  final double? screenHeightIndicator;
-
-  /// screen width indicator
-  final double? screenWidthIndicator;
-
   /// color indicator
   final Color? colorIndicator;
 
   /// opacity indicator
   final double? opacityIndicator;
+
+  ///Custom Command Widget
+  final ShowCaseCommandBuilder? commandBuilder;
 
   const Showcase({
     required this.key,
@@ -317,10 +317,9 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.builderIndicator,
-    this.screenHeightIndicator,
-    this.screenWidthIndicator,
     this.colorIndicator,
     this.opacityIndicator,
+    this.commandBuilder,
   })  : height = null,
         width = null,
         container = null,
@@ -362,10 +361,9 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.builderIndicator,
-    this.screenHeightIndicator,
-    this.screenWidthIndicator,
     this.colorIndicator,
     this.opacityIndicator,
+    this.commandBuilder,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -486,10 +484,9 @@ class _ShowcaseState extends State<Showcase> {
             rectBound,
             size,
             widget.builderIndicator,
-            widget.screenHeightIndicator,
-            widget.screenWidthIndicator,
             widget.colorIndicator,
             widget.opacityIndicator,
+            widget.commandBuilder,
           );
         },
         showOverlay: true,
@@ -566,10 +563,9 @@ class _ShowcaseState extends State<Showcase> {
     Rect rectBound,
     Size screenSize,
     ShowCaseIndicatorBuilder? builderIndicator,
-    double? screenHeightIndicator,
-    double? screenWidthIndicator,
     Color? overlayColorIndicator,
     double? opacityIndicator,
+    ShowCaseCommandBuilder? commandbuilder,
   ) {
     final mediaQuerySize = MediaQuery.of(context).size;
     var blur = 0.0;
@@ -608,10 +604,9 @@ class _ShowcaseState extends State<Showcase> {
                     filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
                     child: builderIndicator != null
                         ? builderIndicator(
-                            screenHeightIndicator: screenHeightIndicator,
-                            screenWidthIndicator: screenWidthIndicator,
-                            overlayColorIndicator: overlayColorIndicator,
-                            opacityIndicator: opacityIndicator,
+                            context,
+                            overlayColorIndicator,
+                            opacityIndicator,
                           )
                         : Container(
                             width: mediaQuerySize.width,
@@ -624,10 +619,9 @@ class _ShowcaseState extends State<Showcase> {
                   )
                 : builderIndicator != null
                     ? builderIndicator(
-                        screenHeightIndicator: screenHeightIndicator,
-                        screenWidthIndicator: screenWidthIndicator,
-                        overlayColorIndicator: overlayColorIndicator,
-                        opacityIndicator: opacityIndicator,
+                        context,
+                        overlayColorIndicator,
+                        opacityIndicator,
                       )
                     : Container(
                         width: mediaQuerySize.width,
@@ -686,6 +680,10 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
           ),
         ],
+        if (commandbuilder != null)
+          commandbuilder(
+            context,
+          ),
       ],
     );
   }
