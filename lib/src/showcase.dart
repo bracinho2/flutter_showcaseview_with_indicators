@@ -34,6 +34,15 @@ import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
+/// Function that creates a custom indicator
+
+typedef ShowCaseIndicatorBuilder = Widget Function({
+  double? screenHeightIndicator,
+  double? screenWidthIndicator,
+  Color? overlayColorIndicator,
+  double? opacityIndicator,
+});
+
 class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
   ///
@@ -248,7 +257,19 @@ class Showcase extends StatefulWidget {
   final bool disableBarrierInteraction;
 
   ///Custom OverlayWidget
-  final Widget? topPageShowCaseIndicator;
+  final ShowCaseIndicatorBuilder? builderIndicator;
+
+  /// screen height indicator
+  final double? screenHeightIndicator;
+
+  /// screen width indicator
+  final double? screenWidthIndicator;
+
+  /// color indicator
+  final Color? colorIndicator;
+
+  /// opacity indicator
+  final double? opacityIndicator;
 
   const Showcase({
     required this.key,
@@ -295,7 +316,11 @@ class Showcase extends StatefulWidget {
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
-    this.topPageShowCaseIndicator,
+    this.builderIndicator,
+    this.screenHeightIndicator,
+    this.screenWidthIndicator,
+    this.colorIndicator,
+    this.opacityIndicator,
   })  : height = null,
         width = null,
         container = null,
@@ -336,7 +361,11 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
-    this.topPageShowCaseIndicator,
+    this.builderIndicator,
+    this.screenHeightIndicator,
+    this.screenWidthIndicator,
+    this.colorIndicator,
+    this.opacityIndicator,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -451,8 +480,17 @@ class _ShowcaseState extends State<Showcase> {
             screenWidth: size.width,
             screenHeight: size.height,
           );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size,
-              widget.topPageShowCaseIndicator);
+          return buildOverlayOnTarget(
+            offset,
+            rectBound.size,
+            rectBound,
+            size,
+            widget.builderIndicator,
+            widget.screenHeightIndicator,
+            widget.screenWidthIndicator,
+            widget.colorIndicator,
+            widget.opacityIndicator,
+          );
         },
         showOverlay: true,
         child: widget.child,
@@ -527,7 +565,11 @@ class _ShowcaseState extends State<Showcase> {
     Size size,
     Rect rectBound,
     Size screenSize,
-    Widget? topPageShowCaseIndicator,
+    ShowCaseIndicatorBuilder? builderIndicator,
+    double? screenHeightIndicator,
+    double? screenWidthIndicator,
+    Color? overlayColorIndicator,
+    double? opacityIndicator,
   ) {
     final mediaQuerySize = MediaQuery.of(context).size;
     var blur = 0.0;
@@ -564,19 +606,12 @@ class _ShowcaseState extends State<Showcase> {
             child: blur != 0
                 ? BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: topPageShowCaseIndicator != null
-                        ? Stack(
-                            children: [
-                              Container(
-                                width: mediaQuerySize.width,
-                                height: mediaQuerySize.height,
-                                decoration: BoxDecoration(
-                                  color: widget.overlayColor
-                                      .withOpacity(widget.overlayOpacity),
-                                ),
-                              ),
-                              topPageShowCaseIndicator,
-                            ],
+                    child: builderIndicator != null
+                        ? builderIndicator(
+                            screenHeightIndicator: screenHeightIndicator,
+                            screenWidthIndicator: screenWidthIndicator,
+                            overlayColorIndicator: overlayColorIndicator,
+                            opacityIndicator: opacityIndicator,
                           )
                         : Container(
                             width: mediaQuerySize.width,
@@ -587,19 +622,12 @@ class _ShowcaseState extends State<Showcase> {
                             ),
                           ),
                   )
-                : topPageShowCaseIndicator != null
-                    ? Stack(
-                        children: [
-                          Container(
-                            width: mediaQuerySize.width,
-                            height: mediaQuerySize.height,
-                            decoration: BoxDecoration(
-                              color: widget.overlayColor
-                                  .withOpacity(widget.overlayOpacity),
-                            ),
-                          ),
-                          topPageShowCaseIndicator,
-                        ],
+                : builderIndicator != null
+                    ? builderIndicator(
+                        screenHeightIndicator: screenHeightIndicator,
+                        screenWidthIndicator: screenWidthIndicator,
+                        overlayColorIndicator: overlayColorIndicator,
+                        opacityIndicator: opacityIndicator,
                       )
                     : Container(
                         width: mediaQuerySize.width,
